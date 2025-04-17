@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <title>සිංහල Gemini Chatbot</title>
+  <style>
+    body {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      background-color: #f2f2f2;
+      padding: 30px;
+    }
+    h2 {
+      color: #333;
+    }
+    #chat-box {
+      border: 1px solid #ccc;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      background-color: white;
+      margin-bottom: 10px;
+    }
+    .user, .bot {
+      margin: 10px 0;
+    }
+    .user {
+      color: blue;
+    }
+    .bot {
+      color: green;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🧘 සිංහල Gemini Chatbot</h2>
+  <div id="chat-box"></div>
+
+  <input type="text" id="user-input" placeholder="ඔබේ ප්‍රශ්නය මෙහි ලියන්න..." size="50">
+  <button onclick="sendMessage()">යවන්න</button>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const message = input.value.trim();
+      if (message === "") return;
+
+      // පරිශීලක පණිවිඩය පෙන්වන්න
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="user"><strong>ඔබ:</strong> ${message}</div>`;
+      input.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        const response = await fetch(`https://nikka-api.vercel.app/ai/gemini?q=${encodeURIComponent(message)}&apiKey=nikka`);
+        const data = await response.json();
+
+        // Bot පිළිතුර පෙන්වන්න
+        chatBox.innerHTML += `<div class="bot"><strong>Bot:</strong> ${data.response}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (error) {
+        chatBox.innerHTML += `<div class="bot"><strong>Bot:</strong> සමාවෙන්න, පිළිතුරක් ලබාගත නොහැක.</div>`;
+      }
+    }
+
+    // Enter key press වලටද යවන්න
+    document.getElementById("user-input").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>
